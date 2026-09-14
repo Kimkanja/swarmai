@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Contact — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section style="padding-top:20px;">
+  <div class="narrow center">
+    <span class="eyebrow">Get in touch</span>
+    <h1>Contact &amp; Support</h1>
+    <p class="lead" style="margin:0 auto;">For license issues, purchase questions, or general support, reach us directly.</p>
+    <div class="card" style="margin-top:28px;display:inline-block;">
+      <p style="margin:0;"><strong>Email:</strong> <a href="mailto:{{ SUPPORT_EMAIL }}">{{ SUPPORT_EMAIL }}</a></p>
+      {% if SUPPORT_TELEGRAM_URL %}
+      <p style="margin:10px 0 0;"><strong>Telegram:</strong> <a href="{{ SUPPORT_TELEGRAM_URL }}" target="_blank" rel="noopener">Message us on Telegram</a></p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

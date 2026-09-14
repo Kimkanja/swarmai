@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field %}
+{% block title %}Issue License — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <h1>Issue License</h1>
+
+    <form method="post" style="max-width:460px;margin-top:20px;" class="card">
+      {{ form.hidden_tag() }}
+      {{ field(form.user_email, placeholder="user@example.com") }}
+      {{ field(form.product_id) }}
+      {{ field(form.access_method) }}
+      {{ field(form.max_activations, placeholder="e.g. 1") }}
+      <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

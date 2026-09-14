@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field %}
+{% block title %}Create Account — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section style="padding-top:30px;">
+  <div class="form-card card">
+    <span class="eyebrow center" style="display:block;text-align:center;">Join {{ SITE_NAME }}</span>
+    <h2 class="center">Create your account</h2>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      {{ field(form.full_name) }}
+      {{ field(form.email) }}
+      {{ field(form.password) }}
+      {{ field(form.confirm_password) }}
+      {{ field(form.referral_code) }}
+      <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+    </form>
+    <p class="center muted" style="margin-top:18px;">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+  </div>
+</section>
+{% endblock %}

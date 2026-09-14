@@ -1,0 +1,10 @@
+<div class="sidebar">
+  <a href="{{ url_for('admin.overview') }}" class="{{ 'active' if request.endpoint == 'admin.overview' }}">Overview</a>
+  <div class="section-label">Manage</div>
+  <a href="{{ url_for('admin.users') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.user') }}">Users</a>
+  <a href="{{ url_for('admin.products') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.product') }}">Products</a>
+  <a href="{{ url_for('admin.licenses') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.license') }}">Licenses</a>
+  <a href="{{ url_for('admin.referrals') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.referral') }}">Referrals</a>
+  <div class="section-label">Platform</div>
+  <a href="{{ url_for('admin.settings') }}" class="{{ 'active' if request.endpoint == 'admin.settings' }}">Settings</a>
+</div>

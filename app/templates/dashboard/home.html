@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/dashboard_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Dashboard</span>
+    <h1>Welcome, {{ current_user.full_name.split(' ')[0] }}</h1>
+    <p class="muted">Here's a snapshot of your account.</p>
+
+    <div class="grid grid-3" style="margin-top:28px;">
+      <div class="card-flat">
+        <div class="stat-cell" style="padding:0;">
+          <div class="v">{{ licenses | length }}</div>
+          <div class="l">Licenses</div>
+        </div>
+      </div>
+      <div class="card-flat">
+        <div class="stat-cell" style="padding:0;">
+          <div class="v">{{ current_user.referrals | length }}</div>
+          <div class="l">Referrals</div>
+        </div>
+      </div>
+      <div class="card-flat">
+        <div class="stat-cell" style="padding:0;">
+          <div class="v mono" style="font-size:16px;">{{ current_user.referral_code }}</div>
+          <div class="l">Your Referral Code</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="margin-top:36px;">Your licenses</h3>
+    {% if licenses %}
+    <table>
+      <thead><tr><th>Product</th><th>License Key</th><th>Status</th><th>Issued</th></tr></thead>
+      <tbody>
+        {% for lic in licenses %}
+        <tr>
+          <td>{{ lic.product.name }}</td>
+          <td class="mono">{{ lic.license_key }}</td>
+          <td><span class="pill pill-{{ lic.status }}">{{ lic.status | title }}</span></td>
+          <td>{{ lic.issued_at.strftime('%d %b %Y') }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="card-flat">
+      <p class="muted">You don't have any licenses yet. <a href="{{ url_for('products.catalog') }}">Browse products →</a></p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

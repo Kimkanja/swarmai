@@ -1,0 +1,317 @@
+//+------------------------------------------------------------------+
+//|                                          VertexLicense_MQL4.mqh   |
+//|              VERTEX AI — licence client for MetaTrader 4          |
+//|              (Vertex Citadel · Vertex Dominion)                   |
+//|                                                                   |
+//|  Same contract as the MQL5 version. Requires MT4 build 600+.      |
+//|                                                                   |
+//|  MT4 setup:                                                       |
+//|  Tools > Options > Expert Advisors > Allow WebRequest for:        |
+//|      https://api.vertexai.co.ke                                   |
+//+------------------------------------------------------------------+
+#property strict
+
+#define VLIC_ENDPOINT   "https://api.vertexai.co.ke/functions/v1/validate-license"
+#define VLIC_SECRET     "PASTE_THE_SAME_HMAC_SECRET_AS_THE_SERVER"
+#define VLIC_PRODUCT    "VERTEX_CITADEL"   // or "VERTEX_DOMINION"
+#define VLIC_EA_VERSION "1.00"
+#define VLIC_CACHE_FILE "vertex_license_mt4.dat"
+
+enum ENUM_LICENSE_STATE { LIC_UNKNOWN, LIC_VALID, LIC_GRACE, LIC_INVALID };
+
+class CVertexLicense
+  {
+private:
+   string   m_key, m_account, m_message, m_tier, m_nonce;
+   int      m_state;
+   datetime m_last_ok, m_last_attempt;
+   int      m_recheck_hours, m_grace_hours;
+
+   string   MakeNonce();
+   bool     HttpPost(const string body, string &response);
+   string   JsonGet(const string json, const string field);
+   string   HmacSha256(const string message, const string secret);
+   void     SaveCache();
+   void     LoadCache();
+
+public:
+            CVertexLicense();
+   void     Init(const string license_key);
+   bool     Check(const bool force=false);
+   bool     CanOpenNewTrades();
+   bool     ShouldManageExisting() { return true; }   // never abandon open trades
+   int      State()   { return m_state;   }
+   string   Message() { return m_message; }
+   string   StatusLine();
+  };
+
+//+------------------------------------------------------------------+
+CVertexLicense::CVertexLicense()
+  {
+   m_state=LIC_UNKNOWN; m_message="Not checked"; m_tier="";
+   m_last_ok=0; m_last_attempt=0; m_recheck_hours=6; m_grace_hours=72;
+  }
+
+void CVertexLicense::Init(const string license_key)
+  {
+   m_key=license_key;
+   StringTrimLeft(m_key); StringTrimRight(m_key);
+   StringToUpper(m_key);              // MQL4 modifies in place
+   m_account=IntegerToString(AccountNumber());
+   LoadCache();
+  }
+
+//+------------------------------------------------------------------+
+bool CVertexLicense::Check(const bool force=false)
+  {
+   datetime now=TimeCurrent();
+
+   if(!force && m_state==LIC_VALID && m_last_ok>0 && (now-m_last_ok) < m_recheck_hours*3600)
+      return true;
+   if(!force && (now-m_last_attempt) < 300)
+      return CanOpenNewTrades();
+
+   m_last_attempt=now;
+
+   if(StringLen(m_key)<8)
+     { m_state=LIC_INVALID; m_message="No licence key entered"; return false; }
+
+   m_nonce=MakeNonce();
+
+   string body=StringConcatenate(
+      "{\"key\":\"",m_key,"\",\"account\":\"",m_account,
+      "\",\"product\":\"",VLIC_PRODUCT,
+      "\",\"ea_version\":\"",VLIC_EA_VERSION,
+      "\",\"terminal_id\":\"",IntegerToString(TerminalInfoInteger(TERMINAL_BUILD)),
+      "\",\"nonce\":\"",m_nonce,"\"}");
+
+   string response="";
+   if(!HttpPost(body,response))
+     {
+      if(m_last_ok>0 && (now-m_last_ok) < m_grace_hours*3600)
+        {
+         m_state=LIC_GRACE;
+         int hrs=(int)((m_grace_hours*3600-(now-m_last_ok))/3600);
+         m_message=StringConcatenate("Offline — grace period (",hrs," h left)");
+         return true;
+        }
+      m_state=LIC_INVALID;
+      m_message="Cannot reach licence server and grace period expired";
+      return false;
+     }
+
+   string sig      = JsonGet(response,"signature");
+   string srv_time = JsonGet(response,"server_time");
+   string echo     = JsonGet(response,"nonce");
+   bool   valid    = (JsonGet(response,"valid")=="true");
+
+   if(echo!=m_nonce)
+     { m_state=LIC_INVALID; m_message="Licence response failed replay check"; return false; }
+
+   string expect=HmacSha256(
+      m_key+"|"+m_account+"|"+(valid?"true":"false")+"|"+srv_time+"|"+m_nonce, VLIC_SECRET);
+
+   if(StringCompare(sig,expect,false)!=0)
+     { m_state=LIC_INVALID; m_message="Licence response signature invalid"; return false; }
+
+   m_message=JsonGet(response,"message");
+   m_tier   =JsonGet(response,"tier");
+
+   string rc=JsonGet(response,"recheck_hours");
+   string gh=JsonGet(response,"grace_hours");
+   if(StringLen(rc)>0) m_recheck_hours=(int)StringToInteger(rc);
+   if(StringLen(gh)>0) m_grace_hours  =(int)StringToInteger(gh);
+
+   if(valid){ m_state=LIC_VALID; m_last_ok=now; SaveCache(); return true; }
+
+   m_state=LIC_INVALID;
+   return false;
+  }
+
+bool CVertexLicense::CanOpenNewTrades()
+  { return (m_state==LIC_VALID || m_state==LIC_GRACE); }
+
+string CVertexLicense::StatusLine()
+  {
+   if(m_state==LIC_VALID)   return "LICENCE: ACTIVE"+(m_tier!=""?" ("+m_tier+")":"");
+   if(m_state==LIC_GRACE)   return "LICENCE: GRACE — "+m_message;
+   if(m_state==LIC_INVALID) return "LICENCE: BLOCKED — "+m_message;
+   return "LICENCE: CHECKING...";
+  }
+
+//+------------------------------------------------------------------+
+bool CVertexLicense::HttpPost(const string body,string &response)
+  {
+   char post[], result[];
+   string headers="Content-Type: application/json\r\n";
+   string result_headers;
+
+   StringToCharArray(body,post,0,StringLen(body));
+   ArrayResize(post,StringLen(body));
+
+   ResetLastError();
+   int status=WebRequest("POST",VLIC_ENDPOINT,headers,8000,post,result,result_headers);
+
+   if(status==-1)
+     {
+      int err=GetLastError();
+      if(err==4060 || err==4067)
+         Print("VERTEX: add ",VLIC_ENDPOINT," to Tools > Options > Expert Advisors > allowed URLs");
+      else
+         Print("VERTEX: licence request failed, error ",err);
+      return false;
+     }
+
+   response=CharArrayToString(result);
+
+   // 429 / 503 -> treat as unreachable so the EA falls into grace, not blocked
+   if(status==429 || status==503)
+     { Print("VERTEX: licence server busy (",status,"), using grace period"); return false; }
+
+   return (status==200);
+  }
+
+//+------------------------------------------------------------------+
+string CVertexLicense::JsonGet(const string json,const string field)
+  {
+   string needle="\""+field+"\":";
+   int p=StringFind(json,needle);
+   if(p<0) return "";
+   p+=StringLen(needle);
+   while(p<StringLen(json) && StringGetCharacter(json,p)==' ') p++;
+   if(p>=StringLen(json)) return "";
+
+   if(StringGetCharacter(json,p)=='"')
+     {
+      p++;
+      int end=StringFind(json,"\"",p);
+      if(end<0) return "";
+      return StringSubstr(json,p,end-p);
+     }
+
+   int end=p;
+   while(end<StringLen(json))
+     {
+      int c=StringGetCharacter(json,end);
+      if(c==',' || c=='}') break;
+      end++;
+     }
+   string raw=StringSubstr(json,p,end-p);
+   StringTrimLeft(raw); StringTrimRight(raw);
+   return raw;
+  }
+
+string CVertexLicense::MakeNonce()
+  {
+   string s="";
+   for(int i=0;i<4;i++) s+=IntegerToString(MathRand(),16);
+   return s+IntegerToString((int)TimeLocal(),16);
+  }
+
+//+------------------------------------------------------------------+
+//| HMAC-SHA256 -> lowercase hex (MQL4 CryptEncode)                   |
+//+------------------------------------------------------------------+
+string CVertexLicense::HmacSha256(const string message,const string secret)
+  {
+   uchar key[],msg[],k_pad[],inner[],outer[],tmp[],dummy[],fin[];
+   int block=64;
+
+   StringToCharArray(secret,key,0,StringLen(secret));
+   ArrayResize(key,StringLen(secret));
+
+   if(ArraySize(key)>block)
+     {
+      ArrayResize(dummy,0);
+      CryptEncode(CRYPT_HASH_SHA256,key,dummy,tmp);
+      ArrayResize(key,ArraySize(tmp));
+      ArrayCopy(key,tmp);
+     }
+
+   ArrayResize(k_pad,block);
+   ArrayInitialize(k_pad,0);
+   for(int i=0;i<ArraySize(key) && i<block;i++) k_pad[i]=key[i];
+
+   StringToCharArray(message,msg,0,StringLen(message));
+   ArrayResize(msg,StringLen(message));
+
+   ArrayResize(inner,block+ArraySize(msg));
+   for(int i=0;i<block;i++) inner[i]=(uchar)(k_pad[i]^0x36);
+   for(int i=0;i<ArraySize(msg);i++) inner[block+i]=msg[i];
+
+   ArrayResize(dummy,0);
+   CryptEncode(CRYPT_HASH_SHA256,inner,dummy,tmp);
+
+   ArrayResize(outer,block+ArraySize(tmp));
+   for(int i=0;i<block;i++) outer[i]=(uchar)(k_pad[i]^0x5C);
+   for(int i=0;i<ArraySize(tmp);i++) outer[block+i]=tmp[i];
+
+   ArrayResize(dummy,0);
+   CryptEncode(CRYPT_HASH_SHA256,outer,dummy,fin);
+
+   string hex="";
+   for(int i=0;i<ArraySize(fin);i++) hex+=StringFormat("%02x",fin[i]);
+   return hex;
+  }
+
+//+------------------------------------------------------------------+
+void CVertexLicense::SaveCache()
+  {
+   int h=FileOpen(VLIC_CACHE_FILE,FILE_WRITE|FILE_BIN|FILE_COMMON);
+   if(h==INVALID_HANDLE) return;
+   FileWriteInteger(h,(int)m_last_ok,LONG_VALUE);
+   FileWriteString(h,m_key+"\n");
+   FileWriteString(h,m_account+"\n");
+   FileClose(h);
+  }
+
+void CVertexLicense::LoadCache()
+  {
+   if(!FileIsExist(VLIC_CACHE_FILE,FILE_COMMON)) return;
+   int h=FileOpen(VLIC_CACHE_FILE,FILE_READ|FILE_BIN|FILE_COMMON);
+   if(h==INVALID_HANDLE) return;
+   datetime saved=(datetime)FileReadInteger(h,LONG_VALUE);
+   string sk=FileReadString(h);
+   string sa=FileReadString(h);
+   FileClose(h);
+   StringReplace(sk,"\n",""); StringReplace(sa,"\n","");
+   if(sk==m_key && sa==m_account) m_last_ok=saved;
+  }
+
+//+------------------------------------------------------------------+
+//| USAGE — MT4                                                       |
+//+------------------------------------------------------------------+
+/*
+
+#include <VertexLicense_MQL4.mqh>
+
+extern string InpLicenseKey = "";   // Licence Key
+
+CVertexLicense Licence;
+
+int OnInit()
+  {
+   Licence.Init(InpLicenseKey);
+   Licence.Check(true);
+   if(Licence.State()==LIC_INVALID)
+     {
+      Print("VERTEX: ",Licence.Message());
+      Comment(Licence.StatusLine());
+      // stay loaded so open trades are still managed
+     }
+   EventSetTimer(1800);
+   return(INIT_SUCCEEDED);
+  }
+
+void OnTimer(){ Licence.Check(); Comment(Licence.StatusLine()); }
+
+void OnTick()
+  {
+   if(Licence.ShouldManageExisting()) ManageOpenPositions();   // always
+   if(!Licence.CanOpenNewTrades())    return;                  // gate new entries
+   LookForEntries();
+  }
+
+void OnDeinit(const int reason){ EventKillTimer(); Comment(""); }
+
+*/
+//+------------------------------------------------------------------+

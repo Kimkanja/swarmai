@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field, checkbox %}
+{% block title %}Log In — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section style="padding-top:30px;">
+  <div class="form-card card">
+    <span class="eyebrow center" style="display:block;text-align:center;">Welcome back</span>
+    <h2 class="center">Log in</h2>
+    <form method="post">
+      {{ form.hidden_tag() }}
+      {{ field(form.email) }}
+      {{ field(form.password) }}
+      {{ checkbox(form.remember_me) }}
+      <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+    </form>
+    <p class="center muted" style="margin-top:18px;">
+      <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a> ·
+      New here? <a href="{{ url_for('auth.register') }}">Create an account</a>
+    </p>
+  </div>
+</section>
+{% endblock %}

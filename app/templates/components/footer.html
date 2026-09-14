@@ -1,0 +1,25 @@
+{% set _parts = SITE_NAME.split(' ', 1) %}
+<footer>
+  <div class="wrap foot-inner">
+    <div class="foot-brand">
+      <span class="brand">
+        {% include "components/logo_mark.html" %}
+        <span class="name">{{ _parts[0]|upper }}{% if _parts|length > 1 %} <em>{{ _parts[1]|upper }}</em>{% endif %}</span>
+      </span>
+      <p class="muted" style="max-width:280px;margin-top:12px;">Autonomous trading systems, engineered as a coordinated swarm — licensed, monitored, and supported.</p>
+    </div>
+    <div class="foot-links">
+      <a href="{{ url_for('products.catalog') }}">Products</a>
+      <a href="{{ url_for('main.home') }}#how-it-works">How It Works</a>
+      <a href="{{ url_for('main.home') }}#sizing-guide">Sizing Guide</a>
+      <a href="{{ url_for('main.faq') }}">FAQ</a>
+      <a href="{{ url_for('main.contact') }}">Contact</a>
+      {% if SUPPORT_TELEGRAM_URL %}<a href="{{ SUPPORT_TELEGRAM_URL }}" target="_blank" rel="noopener">Telegram</a>{% endif %}
+      <a href="mailto:{{ SUPPORT_EMAIL }}">{{ SUPPORT_EMAIL }}</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <p class="risk-disclaimer">Trading leveraged products carries a high level of risk and may not be suitable for all investors. Past performance is not indicative of future results. Nothing on this site constitutes financial advice.</p>
+    <div class="copyright">&copy; {{ SITE_NAME }}. All rights reserved.</div>
+  </div>
+</footer>

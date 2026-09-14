@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Products — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section style="padding-top:20px;">
+  <div class="wrap">
+    <span class="eyebrow">Products</span>
+    <h1>Our Trading Software</h1>
+    <p class="lead">Every product listed below is database-driven and can be purchased directly or, where available, unlocked through the affiliate route.</p>
+
+    {% if products %}
+    <div class="grid grid-2" style="margin-top:36px;">
+      {% for product in products %}
+      <div class="card product-card">
+        <span class="tag">{{ product.platform or "Trading Software" }}</span>
+        <h3>{{ product.name }}</h3>
+        <p class="muted">{{ product.short_description or product.tagline or "" }}</p>
+        {% if product.feature_list %}
+        <ul>
+          {% for feature in product.feature_list[:4] %}
+          <li>{{ feature }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+        <div class="price">{{ product.display_price }}</div>
+        <a class="btn btn-gold btn-block" href="{{ url_for('products.detail', slug=product.slug) }}">View Details</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card center" style="margin-top:30px;"><p class="muted">No products are published yet.</p></div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

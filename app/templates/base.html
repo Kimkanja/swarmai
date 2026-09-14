@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}{{ SITE_NAME }}{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}{{ SITE_NAME }} — automated trading software, license management and support.{% endblock %}">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+
+{% include "components/nav.html" %}
+
+<main>
+  <div class="wrap" style="padding-top:18px;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category if category in ['success','error','info'] else 'info' }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+  </div>
+  {% block content %}{% endblock %}
+</main>
+
+{% include "components/footer.html" %}
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
+</body>
+</html>

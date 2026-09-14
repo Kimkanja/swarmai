@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <h1>Overview</h1>
+
+    <div class="grid grid-4" style="margin-top:24px;">
+      <div class="card-flat"><div class="stat-cell" style="padding:0;"><div class="v">{{ stats.users }}</div><div class="l">Users</div></div></div>
+      <div class="card-flat"><div class="stat-cell" style="padding:0;"><div class="v">{{ stats.products }}</div><div class="l">Products</div></div></div>
+      <div class="card-flat"><div class="stat-cell" style="padding:0;"><div class="v">{{ stats.active_licenses }}</div><div class="l">Active Licenses</div></div></div>
+      <div class="card-flat"><div class="stat-cell" style="padding:0;"><div class="v">{{ stats.pending_verifications }}</div><div class="l">Pending Referrals</div></div></div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top:32px;">
+      <a class="card-flat" href="{{ url_for('admin.product_new') }}"><h4>+ New Product</h4><p class="muted" style="font-size:13px;">Add a product to the catalog.</p></a>
+      <a class="card-flat" href="{{ url_for('admin.license_issue') }}"><h4>+ Issue License</h4><p class="muted" style="font-size:13px;">Manually grant a license.</p></a>
+      <a class="card-flat" href="{{ url_for('admin.referrals') }}"><h4>Review Referrals</h4><p class="muted" style="font-size:13px;">{{ stats.pending_verifications }} pending review.</p></a>
+    </div>
+  </div>
+</div>
+{% endblock %}

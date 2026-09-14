@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Users — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <h1>Users</h1>
+
+    <form method="get" style="max-width:360px;margin:16px 0;">
+      {{ form.q(placeholder="Search by name or email", value=form.q.data or '') }}
+    </form>
+
+    <table>
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td>{{ u.full_name }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.role | title }}</td>
+          <td><span class="pill pill-{{ 'active' if u.is_active_account else 'revoked' }}">{{ 'Active' if u.is_active_account else 'Inactive' }}</span></td>
+          <td>{{ u.created_at.strftime('%d %b %Y') }}</td>
+          <td><a class="btn btn-ghost btn-sm" href="{{ url_for('admin.user_detail', user_id=u.id) }}">View</a></td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">No users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

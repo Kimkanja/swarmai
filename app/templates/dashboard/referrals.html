@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Referrals — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/dashboard_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Referrals</span>
+    <h1>Your Referral Program</h1>
+    <p class="muted">Share your link. When someone registers through it, they're linked to your account.</p>
+
+    <div class="card" style="margin-top:20px;max-width:560px;">
+      <label>Your referral link</label>
+      <div class="license-key" style="width:100%;word-break:break-all;">{{ referral_link }}</div>
+      <p class="muted" style="font-size:12.5px;margin-top:8px;">Referral code: <span class="mono">{{ current_user.referral_code }}</span></p>
+    </div>
+
+    <h3 style="margin-top:32px;">People you've referred</h3>
+    {% if referred_users %}
+    <table>
+      <thead><tr><th>Name</th><th>Joined</th></tr></thead>
+      <tbody>
+        {% for u in referred_users %}
+        <tr><td>{{ u.full_name }}</td><td>{{ u.created_at.strftime('%d %b %Y') }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {% else %}
+    <div class="card-flat"><p class="muted">No referrals yet.</p></div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

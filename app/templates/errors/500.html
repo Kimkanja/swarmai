@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Server Error — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="center" style="padding:100px 0;">
+  <div class="narrow">
+    <span class="eyebrow">500</span>
+    <h1>Something went wrong</h1>
+    <p class="lead" style="margin:0 auto 24px;">We've been notified and are looking into it. Please try again shortly.</p>
+    <a class="btn btn-gold" href="{{ url_for('main.home') }}">Back to home</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field %}
+{% block title %}Profile — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/dashboard_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Account</span>
+    <h1>Profile</h1>
+
+    <div class="card" style="max-width:480px;margin-top:20px;">
+      <p class="muted" style="font-size:13.5px;">Email: <strong>{{ current_user.email }}</strong> (contact support to change)</p>
+      <form method="post" style="margin-top:14px;">
+        {{ form.hidden_tag() }}
+        {{ field(form.full_name) }}
+        {{ field(form.country) }}
+        {{ field(form.phone) }}
+        <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

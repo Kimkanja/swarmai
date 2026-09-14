@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Settings — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <h1>Platform Settings</h1>
+
+    <form method="post" class="card" style="max-width:460px;margin-top:20px;">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+      <div class="form-group checkbox-row">
+        <input type="checkbox" name="maintenance_mode" id="maintenance_mode" {% if settings.maintenance_mode %}checked{% endif %}>
+        <label for="maintenance_mode">Maintenance mode (pauses license validation gracefully)</label>
+      </div>
+
+      <div class="form-group">
+        <label for="validation_cache_hours">License re-check interval (hours)</label>
+        <input type="number" name="validation_cache_hours" id="validation_cache_hours" value="{{ settings.validation_cache_hours }}">
+      </div>
+
+      <div class="form-group">
+        <label for="grace_period_hours">Grace period if server unreachable (hours)</label>
+        <input type="number" name="grace_period_hours" id="grace_period_hours" value="{{ settings.grace_period_hours }}">
+      </div>
+
+      <button class="btn btn-gold btn-block" type="submit">Save Settings</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

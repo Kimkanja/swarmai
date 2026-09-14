@@ -1,0 +1,239 @@
+{% extends "base.html" %}
+{% block title %}{{ SITE_NAME }} — Autonomous Trading, Engineered as a Swarm{% endblock %}
+{% block meta_description %}{{ SITE_NAME }} develops and licenses autonomous trading systems — coordinated, rule-driven, and monitored around the clock.{% endblock %}
+{% block content %}
+
+<section class="hero-v2">
+  <canvas class="net-canvas" aria-hidden="true"></canvas>
+  <div class="wrap hero-v2-inner">
+    <div class="reveal">
+      <span class="badge-glow"><span class="dot-pulse"></span> Licensed &amp; Actively Monitored</span>
+      <h1>Autonomous trading,<br>engineered as a <span class="gold-text">swarm.</span></h1>
+      <p class="lead">{{ SITE_NAME }} builds licensed, rule-driven trading systems that operate as a coordinated network rather than a single script — precise execution, continuous monitoring, no guesswork.</p>
+      <div class="hero-cta">
+        <a class="btn btn-gold" href="{{ url_for('products.catalog') }}">Explore Products</a>
+        <a class="btn btn-outline" href="#how-it-works">See How It Works</a>
+      </div>
+      <div class="hero-v2-stats">
+        <div class="stat"><div class="v">{{ products|length if products else 2 }}</div><div class="l">Live Products</div></div>
+        <div class="stat"><div class="v">24/7</div><div class="l">Autonomous Ops</div></div>
+        <div class="stat"><div class="v">Secure</div><div class="l">License System</div></div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal reveal-delay-2">
+      <div>
+        <span class="product-tag">Flagship System</span>
+        <h3 class="product-name">{{ products[0].name if products else "Vertex Millionaire" }}</h3>
+      </div>
+      <div class="hero-visual-stage">
+        <svg viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="heroGoldGrad" x1="0" y1="0" x2="320" y2="200" gradientUnits="userSpaceOnUse">
+              <stop offset="0" stop-color="#E8C978"/>
+              <stop offset="1" stop-color="#8A6C1B"/>
+            </linearGradient>
+          </defs>
+          <g stroke="url(#heroGoldGrad)" stroke-width="1" opacity="0.55">
+            <line x1="60" y1="40" x2="160" y2="30"/>
+            <line x1="160" y1="30" x2="255" y2="55"/>
+            <line x1="60" y1="40" x2="90" y2="120"/>
+            <line x1="160" y1="30" x2="150" y2="110"/>
+            <line x1="255" y1="55" x2="230" y2="130"/>
+            <line x1="90" y1="120" x2="150" y2="110"/>
+            <line x1="150" y1="110" x2="230" y2="130"/>
+            <line x1="90" y1="120" x2="120" y2="175"/>
+            <line x1="230" y1="130" x2="200" y2="175"/>
+            <line x1="120" y1="175" x2="200" y2="175"/>
+          </g>
+          <circle class="swarm-node" cx="60" cy="40" r="5" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="160" cy="30" r="6.5" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="255" cy="55" r="5" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="90" cy="120" r="4.5" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="150" cy="110" r="7" fill="#201C14"/>
+          <circle class="swarm-node" cx="150" cy="110" r="7" fill="url(#heroGoldGrad)" opacity="0.5"/>
+          <circle class="swarm-node" cx="230" cy="130" r="4.5" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="120" cy="175" r="4" fill="url(#heroGoldGrad)"/>
+          <circle class="swarm-node" cx="200" cy="175" r="4" fill="url(#heroGoldGrad)"/>
+        </svg>
+      </div>
+      <a class="btn btn-outline btn-block" href="{{ url_for('products.catalog') }}">View Products →</a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why {{ SITE_NAME }}</span>
+      <h2>Built like infrastructure, not a script</h2>
+      <p class="lead" style="margin:0 auto;">Every system is licensed, monitored, and governed by clear rules — so what runs on your account is exactly what you signed up for.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-index">01</span>
+        <div class="icon-badge">⚙</div>
+        <h4>Rule-Driven Execution</h4>
+        <p>Every entry and exit follows a defined rule set — no discretionary guesswork, no emotional trading.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-index">02</span>
+        <div class="icon-badge">🛰</div>
+        <h4>Coordinated, Not Isolated</h4>
+        <p>Components of the system work together as a swarm — sharing signals and risk context rather than acting alone.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <span class="feature-index">03</span>
+        <div class="icon-badge">🔒</div>
+        <h4>Secure Personal Licensing</h4>
+        <p>Every license is unique to you, validated live against our server, with full activation control from your dashboard.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-1">
+        <span class="feature-index">04</span>
+        <div class="icon-badge">📡</div>
+        <h4>Continuous Monitoring</h4>
+        <p>Systems run around the clock with status visibility from your dashboard — know what's active at a glance.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-2">
+        <span class="feature-index">05</span>
+        <div class="icon-badge">🧭</div>
+        <h4>Two Ways to Access</h4>
+        <p>Buy a license outright, or qualify for free access through our affiliate route where available.</p>
+      </div>
+      <div class="feature-card reveal reveal-delay-3">
+        <span class="feature-index">06</span>
+        <div class="icon-badge">💬</div>
+        <h4>Direct Support</h4>
+        <p>Real support behind every license — not a ticket queue that disappears after checkout.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Our Software</span>
+      <h2>Choose your system</h2>
+      <p class="lead" style="margin:0 auto;">Every product is database-driven and supports two access routes — purchase outright, or qualify through our affiliate/referral program where available.</p>
+    </div>
+
+    {% if products %}
+    <div class="grid grid-2">
+      {% for product in products %}
+      <div class="card product-card reveal reveal-delay-{{ loop.index }}">
+        <span class="tag">{{ product.platform or "Trading Software" }}</span>
+        <h3>{{ product.name }}</h3>
+        <p class="muted">{{ product.short_description or product.tagline or "" }}</p>
+        <div class="price">{{ product.display_price }}</div>
+        <a class="btn btn-gold btn-block" href="{{ url_for('products.detail', slug=product.slug) }}">View {{ product.name }}</a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card center">
+      <p class="muted">Products are being configured. Please check back shortly, or visit the admin dashboard to publish a product.</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section id="how-it-works">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Process</span>
+      <h2>From account to active license</h2>
+      <p class="lead" style="margin:0 auto;">Four steps between creating an account and having a licensed system running on your terminal.</p>
+    </div>
+
+    <div class="process-rail">
+      <div class="process-step reveal reveal-delay-1">
+        <div class="num">1</div>
+        <h4>Create your account</h4>
+        <p class="muted">Register with your email — takes under a minute.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-2">
+        <div class="num">2</div>
+        <h4>Choose your access route</h4>
+        <p class="muted">Buy a license directly, or apply through our affiliate program where free access is offered.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-3">
+        <div class="num">3</div>
+        <h4>Get your license key</h4>
+        <p class="muted">Once approved, a unique key tied to your account appears on your dashboard.</p>
+      </div>
+      <div class="process-step reveal reveal-delay-4">
+        <div class="num">4</div>
+        <h4>Activate &amp; monitor</h4>
+        <p class="muted">Enter your key into the terminal — the system validates live and you're running.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="sizing-guide">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Capital Guide</span>
+      <h2>Capital &amp; position sizing guide</h2>
+      <p class="lead" style="margin:0 auto;">General principles for how much capital and risk-per-trade typically suit different risk appetites. This is educational context, not a personal recommendation — always size positions according to your own risk tolerance.</p>
+    </div>
+
+    <div class="sizing-tiers">
+      <div class="sizing-card reveal reveal-delay-1">
+        <span class="tier-label">Conservative</span>
+        <h3 class="tier-title">Capital Preservation</h3>
+        <p class="tier-sub">Lower risk per trade, more room to absorb drawdown</p>
+        <ul>
+          <li>Smaller position sizes relative to account balance</li>
+          <li>Prioritizes account longevity over speed of growth</li>
+          <li>Better suited to volatile or uncertain conditions</li>
+          <li>Typically paired with lower leverage usage</li>
+        </ul>
+      </div>
+      <div class="sizing-card is-recommended reveal reveal-delay-2">
+        <span class="recommended-pill">Commonly Recommended</span>
+        <span class="tier-label">Balanced</span>
+        <h3 class="tier-title">Steady Growth</h3>
+        <p class="tier-sub">A measured middle ground for most traders</p>
+        <ul>
+          <li>Moderate position sizing with defined risk limits</li>
+          <li>Room to withstand normal market swings</li>
+          <li>Consistent lot sizing rather than reactive changes</li>
+          <li>A reasonable starting point while you learn a system</li>
+        </ul>
+      </div>
+      <div class="sizing-card reveal reveal-delay-3">
+        <span class="tier-label">Growth-Oriented</span>
+        <h3 class="tier-title">Accelerated</h3>
+        <p class="tier-sub">Higher risk per trade, less cushion for drawdown</p>
+        <ul>
+          <li>Larger position sizes relative to account balance</li>
+          <li>Faster potential capital growth, faster potential loss</li>
+          <li>Requires closer monitoring and a higher risk tolerance</li>
+          <li>Best suited to capital you can afford to risk fully</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="risk-disclaimer">This guide is for general education only and is not personalized financial advice. Leveraged trading carries a high level of risk, and position sizing should reflect your own financial situation and risk tolerance — consult a licensed financial advisor if you're unsure.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="cta-band reveal">
+      <span class="eyebrow" style="color:var(--gold-light);">Get Started</span>
+      <h2>Ready to run a licensed system?</h2>
+      <p class="lead" style="margin:0 auto 26px;">Create your account, choose your access route, and get your license key today.</p>
+      <div class="hero-cta" style="justify-content:center;">
+        <a class="btn btn-gold" href="{{ url_for('auth.register') }}">Create Free Account</a>
+        <a class="btn btn-outline" href="{{ url_for('products.catalog') }}">Browse Products</a>
+        {% if SUPPORT_TELEGRAM_URL %}<a class="btn btn-outline" href="{{ SUPPORT_TELEGRAM_URL }}" target="_blank" rel="noopener">Message us on Telegram</a>{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

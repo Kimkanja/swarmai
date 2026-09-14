@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field, checkbox %}
+{% block title %}{{ 'Edit' if product else 'New' }} Product — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <h1>{{ 'Edit' if product else 'New' }} Product</h1>
+
+    <form method="post" enctype="multipart/form-data" style="max-width:640px;margin-top:20px;">
+      {{ form.hidden_tag() }}
+      <div class="grid grid-2">
+        {{ field(form.code) }}
+        {{ field(form.name) }}
+      </div>
+      {{ field(form.slug) }}
+      {{ field(form.tagline) }}
+      {{ field(form.short_description) }}
+      {{ field(form.description) }}
+      {{ field(form.features, placeholder="One feature per line") }}
+
+      <div class="grid grid-2">
+        {{ field(form.status) }}
+        {{ field(form.display_order) }}
+      </div>
+
+      <div class="grid grid-2">
+        {{ field(form.price, placeholder="Leave blank for 'Contact us'") }}
+        {{ field(form.currency) }}
+      </div>
+      {{ field(form.purchase_url, placeholder="External checkout link, once configured") }}
+      {{ field(form.telegram_url, placeholder="e.g. https://t.me/your_admin_handle — leave blank to use the site default") }}
+
+      {{ checkbox(form.free_access_enabled) }}
+      {{ field(form.affiliate_requirements) }}
+
+      <div class="grid grid-2">
+        {{ field(form.version) }}
+        {{ field(form.platform) }}
+      </div>
+      {{ field(form.download_url) }}
+      {{ checkbox(form.license_required) }}
+
+      <div class="form-group">
+        <label>Product image</label>
+        <input type="file" name="image" accept="image/*">
+        {% if product and product.image_path %}
+        <p class="muted" style="font-size:12.5px;margin-top:6px;">Current: {{ product.image_path }}</p>
+        {% endif %}
+      </div>
+
+      <button class="btn btn-gold" type="submit">{{ form.submit.label.text }}</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

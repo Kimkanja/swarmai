@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}My Licenses — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/dashboard_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Account</span>
+    <h1>My Licenses</h1>
+
+    {% if licenses %}
+      <div class="grid grid-2" style="margin-top:24px;">
+        {% for lic in licenses %}
+        <div class="card">
+          <span class="tag" style="font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gold-deep);font-weight:600;">{{ lic.product.name }}</span>
+          <h3 style="margin-top:8px;">License Key</h3>
+          <div class="license-key">{{ lic.license_key }}</div>
+          <p style="margin-top:16px;">
+            Status: <span class="pill pill-{{ lic.status }}">{{ lic.status | title }}</span>
+          </p>
+          <p class="muted" style="font-size:13px;">
+            Access method: {{ lic.access_method | replace('_',' ') | title }}<br>
+            Issued: {{ lic.issued_at.strftime('%d %b %Y') }}<br>
+            {% if lic.expires_at %}Expires: {{ lic.expires_at.strftime('%d %b %Y') }}<br>{% else %}Expires: Never<br>{% endif %}
+            Activations: {{ lic.active_binding_count }}{% if lic.max_activations %} / {{ lic.max_activations }}{% else %} (unlimited){% endif %}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+    {% else %}
+    <div class="card-flat" style="margin-top:20px;">
+      <p class="muted">No licenses yet. <a href="{{ url_for('products.catalog') }}">Browse products →</a></p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

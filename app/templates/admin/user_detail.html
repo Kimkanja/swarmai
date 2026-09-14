@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ user.email }} — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">User</span>
+    <h1>{{ user.full_name }}</h1>
+    <p class="muted">{{ user.email }} · Joined {{ user.created_at.strftime('%d %b %Y') }}</p>
+
+    <div class="grid grid-2" style="margin-top:20px;max-width:700px;">
+      <div class="card-flat">
+        <p><strong>Role:</strong> {{ user.role | title }}</p>
+        <p><strong>Status:</strong> <span class="pill pill-{{ 'active' if user.is_active_account else 'revoked' }}">{{ 'Active' if user.is_active_account else 'Inactive' }}</span></p>
+        <p><strong>Referral code:</strong> <span class="mono">{{ user.referral_code }}</span></p>
+        <p><strong>Referred by:</strong> {{ user.referred_by.email if user.referred_by else '—' }}</p>
+        <form method="post" action="{{ url_for('admin.toggle_user_active', user_id=user.id) }}" style="margin-top:10px;">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-outline btn-sm" type="submit">{{ 'Deactivate' if user.is_active_account else 'Reactivate' }} account</button>
+        </form>
+      </div>
+    </div>
+
+    <h3 style="margin-top:32px;">Licenses</h3>
+    <table>
+      <thead><tr><th>Product</th><th>Key</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for lic in user.licenses %}
+        <tr><td>{{ lic.product.name }}</td><td class="mono">{{ lic.license_key }}</td><td><span class="pill pill-{{ lic.status }}">{{ lic.status | title }}</span></td></tr>
+        {% else %}
+        <tr><td colspan="3" class="muted">No licenses.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

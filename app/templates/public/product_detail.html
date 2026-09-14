@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% from "components/form_field.html" import field %}
+{% block title %}{{ product.name }} — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section style="padding-top:20px;">
+  <div class="wrap">
+    <div class="grid" style="grid-template-columns: 1.4fr 1fr; gap:40px; align-items:start;">
+      <div>
+        <span class="eyebrow">{{ product.platform or "Trading Software" }}{% if product.version %} · v{{ product.version }}{% endif %}</span>
+        <h1>{{ product.name }}</h1>
+        {% if product.tagline %}<p class="lead">{{ product.tagline }}</p>{% endif %}
+
+        {% if product.description %}
+        <div style="margin-top:24px;">{{ product.description | replace('\n', '<br>') | safe }}</div>
+        {% endif %}
+
+        {% if product.feature_list %}
+        <h3 style="margin-top:32px;">Features</h3>
+        <ul>
+          {% for feat in product.feature_list %}<li>{{ feat }}</li>{% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+
+      <div class="card" style="position:sticky;top:90px;">
+        <div class="price">{{ product.display_price }}</div>
+        <p class="muted" style="font-size:13px;margin-top:-10px;">Fixed price. No automated checkout — you message us on Telegram to pay and we issue your license directly.</p>
+
+        {% if existing_license %}
+          <p class="muted">You already have a license for this product.</p>
+          <a class="btn btn-outline btn-block" href="{{ url_for('dashboard.licenses') }}">View my license</a>
+        {% else %}
+          {% if current_user.is_authenticated %}
+            <form method="post" action="{{ url_for('products.buy', slug=product.slug) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-gold btn-block" type="submit">Buy via Telegram — {{ product.display_price }}</button>
+            </form>
+          {% else %}
+            <a class="btn btn-gold btn-block" href="{{ url_for('auth.login', next=request.path) }}">Log in to purchase</a>
+          {% endif %}
+
+          {% set tg_link = product.telegram_link(default_url=SUPPORT_TELEGRAM_URL, prefill=false) %}
+          {% if tg_link %}
+          <a class="btn btn-outline btn-block" style="margin-top:10px;" href="{{ tg_link }}" target="_blank" rel="noopener">Message us on Telegram</a>
+          {% endif %}
+
+          {% if product.free_access_enabled %}
+          <div class="rule" style="height:1px;background:var(--hairline);margin:20px 0;"></div>
+          <h4>Free access via affiliate route</h4>
+          {% if product.affiliate_requirements %}
+            <p class="muted" style="font-size:13.5px;">{{ product.affiliate_requirements }}</p>
+          {% endif %}
+
+          {% if current_user.is_authenticated %}
+            {% if existing_verification %}
+              <p><span class="pill pill-{{ existing_verification.status }}">{{ existing_verification.status | title }}</span></p>
+              {% if existing_verification.status == 'rejected' %}
+                <p class="muted" style="font-size:13px;">{{ existing_verification.admin_note or "" }}</p>
+              {% endif %}
+            {% else %}
+              <form method="post" action="{{ url_for('products.request_free_access', slug=product.slug) }}">
+                {{ verification_form.hidden_tag() }}
+                {{ field(verification_form.submitted_reference, placeholder="e.g. broker account number") }}
+                <button class="btn btn-outline btn-block" type="submit">Submit for Review</button>
+              </form>
+            {% endif %}
+          {% else %}
+            <a class="btn btn-outline btn-block" href="{{ url_for('auth.login', next=request.path) }}">Log in to apply</a>
+          {% endif %}
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

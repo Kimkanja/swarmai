@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Products — Admin — {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="shell">
+  {% include "components/admin_sidebar.html" %}
+  <div class="content-area">
+    <span class="eyebrow">Administration</span>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <h1>Products</h1>
+      <a class="btn btn-gold btn-sm" href="{{ url_for('admin.product_new') }}">+ New Product</a>
+    </div>
+
+    <table>
+      <thead><tr><th>Name</th><th>Code</th><th>Status</th><th>Price</th><th>Free Access</th><th></th></tr></thead>
+      <tbody>
+        {% for p in products %}
+        <tr>
+          <td>{{ p.name }}</td>
+          <td class="mono">{{ p.code }}</td>
+          <td><span class="pill pill-{{ p.status }}">{{ p.status | title }}</span></td>
+          <td>{{ p.display_price }}</td>
+          <td>{{ 'Yes' if p.free_access_enabled else 'No' }}</td>
+          <td style="display:flex;gap:6px;">
+            <a class="btn btn-ghost btn-sm" href="{{ url_for('admin.product_edit', product_id=p.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.product_delete', product_id=p.id) }}" onsubmit="return confirm('Delete/retire this product?');">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-ghost btn-sm" type="submit" style="color:var(--error);">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="muted">No products yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

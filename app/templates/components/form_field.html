@@ -1,0 +1,18 @@
+{% macro field(f) %}
+<div class="form-group">
+  {{ f.label }}
+  {{ f(**kwargs) }}
+  {% if f.errors %}
+    {% for err in f.errors %}
+      <div class="field-error">{{ err }}</div>
+    {% endfor %}
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro checkbox(f) %}
+<div class="form-group checkbox-row">
+  {{ f }}
+  {{ f.label }}
+</div>
+{% endmacro %}
