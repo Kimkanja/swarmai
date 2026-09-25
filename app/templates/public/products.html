@@ -10,7 +10,7 @@
     {% if products %}
     <div class="grid grid-2" style="margin-top:36px;">
       {% for product in products %}
-      <div class="card product-card">
+      <div class="card product-card reveal reveal-delay-{{ (loop.index0 % 3) + 1 }}">
         <span class="tag">{{ product.platform or "Trading Software" }}</span>
         <h3>{{ product.name }}</h3>
         <p class="muted">{{ product.short_description or product.tagline or "" }}</p>
@@ -27,7 +27,12 @@
       {% endfor %}
     </div>
     {% else %}
-    <div class="card center" style="margin-top:30px;"><p class="muted">No products are published yet.</p></div>
+    <div class="empty-state" style="margin-top:30px;">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 8l8-4.5L20 8v8l-8 4.5L4 16z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <p class="muted">No products are published yet — check back shortly.</p>
+    </div>
     {% endif %}
   </div>
 </section>

@@ -4,38 +4,50 @@
 <div class="shell">
   {% include "components/admin_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Administration</span>
-    <h1>Referral Verifications</h1>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Referral Verifications</h1>
+      </div>
+    </div>
 
-    <table>
-      <thead><tr><th>User</th><th>Product</th><th>Reference</th><th>Status</th><th></th></tr></thead>
-      <tbody>
-        {% for v in verifications %}
-        <tr>
-          <td>{{ v.user.email }}</td>
-          <td>{{ v.product.name }}</td>
-          <td class="mono">{{ v.submitted_reference or '—' }}</td>
-          <td><span class="pill pill-{{ v.status }}">{{ v.status | title }}</span></td>
-          <td>
-            {% if v.status == 'submitted' %}
-            <div style="display:flex;gap:6px;">
-              <form method="post" action="{{ url_for('admin.referral_approve', verification_id=v.id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-gold btn-sm" type="submit">Approve</button>
-              </form>
-              <form method="post" action="{{ url_for('admin.referral_reject', verification_id=v.id) }}">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button class="btn btn-outline btn-sm" type="submit">Reject</button>
-              </form>
-            </div>
-            {% endif %}
-          </td>
-        </tr>
-        {% else %}
-        <tr><td colspan="5" class="muted">No referral verifications submitted yet.</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    {% if verifications %}
+    <div class="table-card">
+      <table>
+        <thead><tr><th>User</th><th>Product</th><th>Reference</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          {% for v in verifications %}
+          <tr>
+            <td>{{ v.user.email }}</td>
+            <td>{{ v.product.name }}</td>
+            <td class="mono">{{ v.submitted_reference or '—' }}</td>
+            <td><span class="pill pill-{{ v.status }}">{{ v.status | title }}</span></td>
+            <td>
+              {% if v.status == 'submitted' %}
+              <div class="admin-actions">
+                <form method="post" action="{{ url_for('admin.referral_approve', verification_id=v.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-gold btn-sm" type="submit">Approve</button>
+                </form>
+                <form method="post" action="{{ url_for('admin.referral_reject', verification_id=v.id) }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-outline btn-sm" type="submit">Reject</button>
+                </form>
+              </div>
+              {% endif %}
+            </td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" class="muted">No referral verifications submitted yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+      <p class="muted">No referral verifications submitted yet.</p>
+    </div>
+    {% endif %}
   </div>
 </div>
 {% endblock %}

@@ -2,21 +2,45 @@
 {% from "components/form_field.html" import field, checkbox %}
 {% block title %}Log In — {{ SITE_NAME }}{% endblock %}
 {% block content %}
-<section style="padding-top:30px;">
-  <div class="form-card card">
-    <span class="eyebrow center" style="display:block;text-align:center;">Welcome back</span>
-    <h2 class="center">Log in</h2>
-    <form method="post">
-      {{ form.hidden_tag() }}
-      {{ field(form.email) }}
-      {{ field(form.password) }}
-      {{ checkbox(form.remember_me) }}
-      <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
-    </form>
-    <p class="center muted" style="margin-top:18px;">
-      <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a> ·
-      New here? <a href="{{ url_for('auth.register') }}">Create an account</a>
-    </p>
+<div class="auth-shell">
+  <div class="auth-visual">
+    <a class="brand" href="{{ url_for('main.home') }}">
+      {% include "components/logo_mark.html" %}
+      {% set _parts = SITE_NAME.split(' ', 1) %}
+      <span class="name">{{ _parts[0]|upper }}{% if _parts|length > 1 %} <em>{{ _parts[1]|upper }}</em>{% endif %}</span>
+    </a>
+    <div>
+      <h2>Autonomous trading,<br>engineered as a swarm.</h2>
+      <p class="lead" style="color:#D9CFB8;">Log in to manage your licenses, track referrals, and keep every system running exactly as configured.</p>
+    </div>
+    <div class="auth-visual-quote">
+      <p>&ldquo;Precise execution, continuous monitoring, no guesswork.&rdquo;</p>
+      <span class="cite">{{ SITE_NAME }}</span>
+    </div>
   </div>
-</section>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <a class="brand top-brand" href="{{ url_for('main.home') }}">
+        {% include "components/logo_mark.html" %}
+      </a>
+      <span class="eyebrow center" style="display:block;text-align:center;">Welcome back</span>
+      <h2 class="center">Log in</h2>
+      <p class="muted center" style="margin-top:-8px;">Enter your details to access your dashboard.</p>
+
+      <form method="post" novalidate style="margin-top:24px;">
+        {{ form.hidden_tag() }}
+        {{ field(form.email, autocomplete="email", autofocus=true) }}
+        {{ field(form.password, autocomplete="current-password") }}
+        <div style="display:flex;justify-content:space-between;align-items:center;margin:-8px 0 20px;">
+          {{ checkbox(form.remember_me) }}
+          <a href="{{ url_for('auth.forgot_password') }}" style="font-size:13px;">Forgot password?</a>
+        </div>
+        <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+      </form>
+
+      <p class="auth-footline">New here? <a href="{{ url_for('auth.register') }}">Create an account</a></p>
+    </div>
+  </div>
+</div>
 {% endblock %}

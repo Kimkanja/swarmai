@@ -5,10 +5,14 @@
 <div class="shell">
   {% include "components/admin_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Administration</span>
-    <h1>Issue License</h1>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Issue License</h1>
+      </div>
+    </div>
 
-    <form method="post" style="max-width:460px;margin-top:20px;" class="card">
+    <form method="post" class="card" style="max-width:460px;">
       {{ form.hidden_tag() }}
       {{ field(form.user_email, placeholder="user@example.com") }}
       {{ field(form.product_id) }}

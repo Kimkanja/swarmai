@@ -20,7 +20,19 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="flash flash-{{ category if category in ['success','error','info'] else 'info' }}">{{ message }}</div>
+          {% set cat = category if category in ['success','error','info'] else 'info' %}
+          <div class="flash flash-{{ cat }}" role="alert">
+            <svg class="flash-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              {% if cat == 'success' %}
+                <circle cx="12" cy="12" r="9.5"/><path d="M8 12.5l2.8 2.8L16.5 9" stroke-linecap="round" stroke-linejoin="round"/>
+              {% elif cat == 'error' %}
+                <circle cx="12" cy="12" r="9.5"/><path d="M12 7.5v6M12 16.8h.01" stroke-linecap="round" stroke-linejoin="round"/>
+              {% else %}
+                <circle cx="12" cy="12" r="9.5"/><path d="M12 10.5v6M12 7.2h.01" stroke-linecap="round" stroke-linejoin="round"/>
+              {% endif %}
+            </svg>
+            <span class="flash-text">{{ message }}</span>
+          </div>
         {% endfor %}
       {% endif %}
     {% endwith %}

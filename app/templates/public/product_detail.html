@@ -24,7 +24,10 @@
 
       <div class="card" style="position:sticky;top:90px;">
         <div class="price">{{ product.display_price }}</div>
-        <p class="muted" style="font-size:13px;margin-top:-10px;">Fixed price. No automated checkout — you message us on Telegram to pay and we issue your license directly.</p>
+        <p class="buy-note">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9.5"/><path d="M12 10.5v6M12 7.2h.01" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Fixed price. No automated checkout — you message us on Telegram to pay and we issue your license directly.
+        </p>
 
         {% if existing_license %}
           <p class="muted">You already have a license for this product.</p>

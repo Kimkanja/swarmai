@@ -4,28 +4,51 @@
 <div class="shell">
   {% include "components/dashboard_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Referrals</span>
-    <h1>Your Referral Program</h1>
-    <p class="muted">Share your link. When someone registers through it, they're linked to your account.</p>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Referrals</span>
+        <h1>Your Referral Program</h1>
+        <p class="page-sub">Share your link. When someone registers through it, they're linked to your account.</p>
+      </div>
+    </div>
 
-    <div class="card" style="margin-top:20px;max-width:560px;">
+    <div class="card" style="max-width:560px;">
       <label>Your referral link</label>
-      <div class="license-key" style="width:100%;word-break:break-all;">{{ referral_link }}</div>
-      <p class="muted" style="font-size:12.5px;margin-top:8px;">Referral code: <span class="mono">{{ current_user.referral_code }}</span></p>
+      <div class="copy-field">
+        <div class="license-key" style="width:100%;word-break:break-all;">{{ referral_link }}</div>
+        <button type="button" class="copy-btn" data-copy="{{ referral_link }}">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="8" y="8" width="12" height="12" rx="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M4 16V5.5A1.5 1.5 0 0 1 5.5 4H15" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span class="copy-label">Copy</span>
+        </button>
+      </div>
+      <p class="muted" style="font-size:12.5px;margin-top:10px;">Referral code: <span class="mono">{{ current_user.referral_code }}</span></p>
     </div>
 
     <h3 style="margin-top:32px;">People you've referred</h3>
     {% if referred_users %}
-    <table>
-      <thead><tr><th>Name</th><th>Joined</th></tr></thead>
-      <tbody>
-        {% for u in referred_users %}
-        <tr><td>{{ u.full_name }}</td><td>{{ u.created_at.strftime('%d %b %Y') }}</td></tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-card">
+      <table>
+        <thead><tr><th>Name</th><th>Joined</th></tr></thead>
+        <tbody>
+          {% for u in referred_users %}
+          <tr><td>{{ u.full_name }}</td><td>{{ u.created_at.strftime('%d %b %Y') }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-    <div class="card-flat"><p class="muted">No referrals yet.</p></div>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <circle cx="9" cy="8" r="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3.5 19c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="muted">No referrals yet — share your link to get started.</p>
+    </div>
     {% endif %}
   </div>
 </div>

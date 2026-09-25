@@ -2,20 +2,49 @@
 {% from "components/form_field.html" import field %}
 {% block title %}Create Account — {{ SITE_NAME }}{% endblock %}
 {% block content %}
-<section style="padding-top:30px;">
-  <div class="form-card card">
-    <span class="eyebrow center" style="display:block;text-align:center;">Join {{ SITE_NAME }}</span>
-    <h2 class="center">Create your account</h2>
-    <form method="post">
-      {{ form.hidden_tag() }}
-      {{ field(form.full_name) }}
-      {{ field(form.email) }}
-      {{ field(form.password) }}
-      {{ field(form.confirm_password) }}
-      {{ field(form.referral_code) }}
-      <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
-    </form>
-    <p class="center muted" style="margin-top:18px;">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+<div class="auth-shell">
+  <div class="auth-visual">
+    <a class="brand" href="{{ url_for('main.home') }}">
+      {% include "components/logo_mark.html" %}
+      {% set _parts = SITE_NAME.split(' ', 1) %}
+      <span class="name">{{ _parts[0]|upper }}{% if _parts|length > 1 %} <em>{{ _parts[1]|upper }}</em>{% endif %}</span>
+    </a>
+    <div>
+      <h2>Four steps to a<br>licensed, active system.</h2>
+      <p class="lead" style="color:#D9CFB8;">Create your account, choose your access route, and get a unique license key tied to you — validated live, every time.</p>
+    </div>
+    <div class="auth-visual-quote">
+      <p>&ldquo;Every license is unique to you, validated live against our server.&rdquo;</p>
+      <span class="cite">{{ SITE_NAME }}</span>
+    </div>
   </div>
-</section>
+
+  <div class="auth-form-side">
+    <div class="auth-card">
+      <a class="brand top-brand" href="{{ url_for('main.home') }}">
+        {% include "components/logo_mark.html" %}
+      </a>
+      <span class="eyebrow center" style="display:block;text-align:center;">Join {{ SITE_NAME }}</span>
+      <h2 class="center">Create your account</h2>
+      <p class="muted center" style="margin-top:-8px;">Takes under a minute — no card required.</p>
+
+      <form method="post" novalidate style="margin-top:24px;">
+        {{ form.hidden_tag() }}
+        {{ field(form.full_name, autocomplete="name", autofocus=true) }}
+        {{ field(form.email, autocomplete="email") }}
+        {{ field(form.password, autocomplete="new-password") }}
+        <ul class="pw-requirements" data-target="password">
+          <li data-rule="length">8+ characters</li>
+          <li data-rule="letter">A letter</li>
+          <li data-rule="number">A number</li>
+        </ul>
+        {{ field(form.confirm_password, autocomplete="new-password") }}
+        {{ field(form.referral_code, placeholder="Have a referral code?") }}
+        <button class="btn btn-gold btn-block" type="submit">{{ form.submit.label.text }}</button>
+      </form>
+
+      <p class="auth-footline">Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+    </div>
+  </div>
+</div>
 {% endblock %}

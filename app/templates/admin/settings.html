@@ -4,10 +4,14 @@
 <div class="shell">
   {% include "components/admin_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Administration</span>
-    <h1>Platform Settings</h1>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>Platform Settings</h1>
+      </div>
+    </div>
 
-    <form method="post" class="card" style="max-width:460px;margin-top:20px;">
+    <form method="post" class="card" style="max-width:480px;">
       <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
       <div class="form-group checkbox-row">

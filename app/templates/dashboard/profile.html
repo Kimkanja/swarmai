@@ -5,10 +5,15 @@
 <div class="shell">
   {% include "components/dashboard_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Account</span>
-    <h1>Profile</h1>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Account</span>
+        <h1>Profile</h1>
+        <p class="page-sub">Manage your personal details.</p>
+      </div>
+    </div>
 
-    <div class="card" style="max-width:480px;margin-top:20px;">
+    <div class="card" style="max-width:480px;">
       <p class="muted" style="font-size:13.5px;">Email: <strong>{{ current_user.email }}</strong> (contact support to change)</p>
       <form method="post" style="margin-top:14px;">
         {{ form.hidden_tag() }}

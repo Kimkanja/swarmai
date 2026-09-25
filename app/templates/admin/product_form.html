@@ -5,11 +5,17 @@
 <div class="shell">
   {% include "components/admin_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Administration</span>
-    <h1>{{ 'Edit' if product else 'New' }} Product</h1>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Administration</span>
+        <h1>{{ 'Edit' if product else 'New' }} Product</h1>
+      </div>
+    </div>
 
-    <form method="post" enctype="multipart/form-data" style="max-width:640px;margin-top:20px;">
+    <form method="post" enctype="multipart/form-data" class="card" style="max-width:680px;">
       {{ form.hidden_tag() }}
+
+      <h4 style="margin-bottom:14px;">Basics</h4>
       <div class="grid grid-2">
         {{ field(form.code) }}
         {{ field(form.name) }}
@@ -20,11 +26,12 @@
       {{ field(form.description) }}
       {{ field(form.features, placeholder="One feature per line") }}
 
+      <hr class="divider">
+      <h4 style="margin-bottom:14px;">Status &amp; pricing</h4>
       <div class="grid grid-2">
         {{ field(form.status) }}
         {{ field(form.display_order) }}
       </div>
-
       <div class="grid grid-2">
         {{ field(form.price, placeholder="Leave blank for 'Contact us'") }}
         {{ field(form.currency) }}
@@ -32,9 +39,13 @@
       {{ field(form.purchase_url, placeholder="External checkout link, once configured") }}
       {{ field(form.telegram_url, placeholder="e.g. https://t.me/your_admin_handle — leave blank to use the site default") }}
 
+      <hr class="divider">
+      <h4 style="margin-bottom:14px;">Affiliate / free access</h4>
       {{ checkbox(form.free_access_enabled) }}
       {{ field(form.affiliate_requirements) }}
 
+      <hr class="divider">
+      <h4 style="margin-bottom:14px;">Software details</h4>
       <div class="grid grid-2">
         {{ field(form.version) }}
         {{ field(form.platform) }}
@@ -42,6 +53,8 @@
       {{ field(form.download_url) }}
       {{ checkbox(form.license_required) }}
 
+      <hr class="divider">
+      <h4 style="margin-bottom:14px;">Media</h4>
       <div class="form-group">
         <label>Product image</label>
         <input type="file" name="image" accept="image/*">
@@ -50,7 +63,7 @@
         {% endif %}
       </div>
 
-      <button class="btn btn-gold" type="submit">{{ form.submit.label.text }}</button>
+      <button class="btn btn-gold" type="submit" style="margin-top:8px;">{{ form.submit.label.text }}</button>
     </form>
   </div>
 </div>

@@ -5,9 +5,10 @@
       {% include "components/logo_mark.html" %}
       <span class="name">{{ _parts[0]|upper }}{% if _parts|length > 1 %} <em>{{ _parts[1]|upper }}</em>{% endif %}</span>
     </a>
-    <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+    <button class="nav-toggle" type="button" aria-label="Toggle menu" aria-expanded="false" aria-controls="nav-panel">
       <span></span><span></span><span></span>
     </button>
+    <div class="nav-panel" id="nav-panel">
     <div class="nav-links">
       <a href="{{ url_for('products.catalog') }}">Products</a>
       <a href="{{ url_for('main.home') }}#how-it-works">How It Works</a>
@@ -31,6 +32,7 @@
         <a class="btn btn-ghost btn-sm" href="{{ url_for('auth.login') }}">Log in</a>
         <a class="btn btn-gold btn-sm" href="{{ url_for('auth.register') }}">Get Started</a>
       {% endif %}
+    </div>
     </div>
   </div>
 </nav>

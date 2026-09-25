@@ -4,49 +4,73 @@
 <div class="shell">
   {% include "components/dashboard_sidebar.html" %}
   <div class="content-area">
-    <span class="eyebrow">Dashboard</span>
-    <h1>Welcome, {{ current_user.full_name.split(' ')[0] }}</h1>
-    <p class="muted">Here's a snapshot of your account.</p>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Dashboard</span>
+        <h1>Welcome, {{ current_user.full_name.split(' ')[0] }}</h1>
+        <p class="page-sub">Here's a snapshot of your account.</p>
+      </div>
+      <div class="page-head-actions">
+        <a class="btn btn-gold btn-sm" href="{{ url_for('products.catalog') }}">Browse Products</a>
+      </div>
+    </div>
 
-    <div class="grid grid-3" style="margin-top:28px;">
-      <div class="card-flat">
-        <div class="stat-cell" style="padding:0;">
-          <div class="v">{{ licenses | length }}</div>
-          <div class="l">Licenses</div>
+    <div class="grid grid-3 stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="3" y="6" width="18" height="12" rx="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3 10h18M7 14h4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
+        <div class="stat-body"><div class="v">{{ licenses | length }}</div><div class="l">Licenses</div></div>
       </div>
-      <div class="card-flat">
-        <div class="stat-cell" style="padding:0;">
-          <div class="v">{{ current_user.referrals | length }}</div>
-          <div class="l">Referrals</div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="9" cy="8" r="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M3.5 19c0-3.3 2.5-5.5 5.5-5.5s5.5 2.2 5.5 5.5M15.5 8.2a3 3 0 1 1 0 5.9M18.5 19c0-2.7-1.7-4.6-3.8-5.3" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
+        <div class="stat-body"><div class="v">{{ current_user.referrals | length }}</div><div class="l">Referrals</div></div>
       </div>
-      <div class="card-flat">
-        <div class="stat-cell" style="padding:0;">
-          <div class="v mono" style="font-size:16px;">{{ current_user.referral_code }}</div>
-          <div class="l">Your Referral Code</div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M12 3l2.2 4.6 5 .7-3.6 3.6.9 5-4.5-2.4-4.5 2.4.9-5-3.6-3.6 5-.7z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
         </div>
+        <div class="stat-body"><div class="v mono">{{ current_user.referral_code }}</div><div class="l">Your Referral Code</div></div>
       </div>
     </div>
 
     <h3 style="margin-top:36px;">Your licenses</h3>
     {% if licenses %}
-    <table>
-      <thead><tr><th>Product</th><th>License Key</th><th>Status</th><th>Issued</th></tr></thead>
-      <tbody>
-        {% for lic in licenses %}
-        <tr>
-          <td>{{ lic.product.name }}</td>
-          <td class="mono">{{ lic.license_key }}</td>
-          <td><span class="pill pill-{{ lic.status }}">{{ lic.status | title }}</span></td>
-          <td>{{ lic.issued_at.strftime('%d %b %Y') }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="table-card">
+      <table>
+        <thead><tr><th>Product</th><th>License Key</th><th>Status</th><th>Issued</th></tr></thead>
+        <tbody>
+          {% for lic in licenses %}
+          <tr>
+            <td>{{ lic.product.name }}</td>
+            <td class="mono">{{ lic.license_key }}</td>
+            <td><span class="pill pill-{{ lic.status }}">{{ lic.status | title }}</span></td>
+            <td>{{ lic.issued_at.strftime('%d %b %Y') }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
     {% else %}
-    <div class="card-flat">
-      <p class="muted">You don't have any licenses yet. <a href="{{ url_for('products.catalog') }}">Browse products →</a></p>
+    <div class="empty-state">
+      <div class="empty-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+          <rect x="3" y="6" width="18" height="12" rx="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 10h18" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="muted">You don't have any licenses yet.</p>
+      <a class="btn btn-outline btn-sm" href="{{ url_for('products.catalog') }}" style="margin-top:8px;">Browse products →</a>
     </div>
     {% endif %}
   </div>
